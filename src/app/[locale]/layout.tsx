@@ -1,34 +1,33 @@
 // src/app/[locale]/layout.tsx
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/navigation';
-import { RootProvider } from '@/providers/root-provider';
-import '@/app/globals.css';
+import { Locale, NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/navigation";
+import { RootProvider } from "@/providers/root-provider";
+import "@/app/globals.css";
+import { getHtmlDirectionProps } from "@/utils/utils";
 
-export default async function LocaleLayout({
+export default async function RootLayout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
 
-  // بررسی معتبر بودن زبان
   if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 
   const messages = await getMessages();
+  const dirProps = getHtmlDirectionProps(locale);
 
   return (
-    <html lang={locale} dir={locale === 'fa' ? 'rtl' : 'ltr'} suppressHydrationWarning>
-      <body>
+    <html {...dirProps} suppressHydrationWarning>
+      <body className="h-screen w-screen bg-background text-foreground antialiased transition-colors duration-200">
         <NextIntlClientProvider messages={messages}>
-          <RootProvider>
-            {children}
-          </RootProvider>
+          <RootProvider>{children}</RootProvider>
         </NextIntlClientProvider>
       </body>
     </html>
