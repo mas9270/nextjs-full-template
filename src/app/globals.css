@@ -1,11 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --font-yekan: var(--font-iran-yekan);
+}
+
 @layer base {
-  body {
-    @apply font-sans text-zinc-900 dark:text-zinc-100 antialiased;
-    font-feature-settings:
-      "ss01", "zero"; /* برای نمایش بهتر اعداد و حروف فارسی */
-  }
   :root {
     --background: #f8fafc;
     --foreground: #0f172a;
@@ -29,9 +28,11 @@
     --muted-foreground: #94a3b8;
     --border: #1f293d;
   }
-}
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
+  body {
+    font-family: var(--font-iran-yekan), sans-serif;
+    font-feature-settings: "ss01", "zero";
+    color: var(--foreground);
+    background-color: var(--background);
+  }
 }
