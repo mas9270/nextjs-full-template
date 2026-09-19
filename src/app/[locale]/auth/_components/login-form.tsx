@@ -1,5 +1,5 @@
 "use client";
-
+import { http } from "@/lib/api-client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import {
   Loader2,
   ShieldCheck,
 } from "lucide-react";
+import { useRouter } from "next/router";
+import { useAppStore } from "@/store/use-app-store";
 
 const loginSchema = z.object({
   email: z.string().email("ایمیل معتبر نیست"),
@@ -24,7 +26,9 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
+  const setUser = useAppStore((state) => state.setUser);
+  const [serverError, setServerError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -35,8 +39,18 @@ export function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    // فراخوانی axios از api-client
-    console.log(data);
+    try {
+      setServerError(null);
+      const res = await http.post<{ user: any }>("/auth/login", data);
+      if (res.data?.user) {
+        setUser(res.data.user);
+      }
+      router.push("/main");
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || "نام کاربری یا رمز عبور اشتباه است";
+      setServerError(message);
+    }
   };
 
   return (

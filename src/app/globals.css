@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
 @layer base {
+  body {
+    @apply font-sans text-zinc-900 dark:text-zinc-100 antialiased;
+    font-feature-settings:
+      "ss01", "zero"; /* برای نمایش بهتر اعداد و حروف فارسی */
+  }
   :root {
     --background: #f8fafc;
     --foreground: #0f172a;

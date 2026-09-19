@@ -2,12 +2,18 @@ import { create } from "zustand";
 import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import Cookies from "js-cookie";
 
+// src/store/use-app-store.ts
+
+import { UserRole } from "@/models/user.model"; // ایمپورت Enum از مدل
+
 interface User {
   id: string;
   name: string;
   email?: string;
-  [key: string]: unknown;
+  role: UserRole; // 👈 اضافه کردن فیلد role به صورت صریح
 }
+
+// ... بقیه کد
 
 interface AppState {
   user: User | null;
@@ -43,7 +49,7 @@ export const useAppStore = create<AppState>()(
       },
     }),
     {
-      name: "token",
+      name: "app-user-storage",
       storage: createJSONStorage(() => cookieStorage),
     },
   ),
