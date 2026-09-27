@@ -89,10 +89,10 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             dir="ltr"
             placeholder="name@example.com"
             disabled={isSubmitting}
-            className={`h-11 w-full rounded-xl border bg-zinc-50/50 pl-10 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 transition focus:bg-white focus:outline-none focus:ring-2 disabled:opacity-50 dark:bg-zinc-900/50 dark:text-zinc-100 dark:focus:bg-zinc-900 ${
+            className={`h-11 w-full rounded-xl border bg-background/70 pl-10 pr-3 text-sm text-foreground placeholder:text-zinc-400 transition focus:bg-card focus:outline-none focus:ring-2 disabled:opacity-50 dark:bg-background/70 dark:text-foreground dark:focus:bg-card ${
               errors.email
                 ? "border-rose-300 focus:border-rose-500 focus:ring-rose-500/20 dark:border-rose-800"
-                : "border-zinc-200 focus:border-indigo-500 focus:ring-indigo-500/20 dark:border-zinc-800 dark:focus:border-indigo-500"
+                : "border-border focus:border-indigo-500 focus:ring-indigo-500/20 dark:border-border dark:focus:border-indigo-500"
             }`}
           />
           <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -113,10 +113,10 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             dir="ltr"
             placeholder="••••••••"
             disabled={isSubmitting}
-            className={`h-11 w-full rounded-xl border bg-zinc-50/50 pl-10 pr-10 text-sm text-zinc-900 placeholder:text-zinc-400 transition focus:bg-white focus:outline-none focus:ring-2 disabled:opacity-50 dark:bg-zinc-900/50 dark:text-zinc-100 dark:focus:bg-zinc-900 ${
+            className={`h-11 w-full rounded-xl border bg-background/70 pl-10 pr-10 text-sm text-foreground placeholder:text-zinc-400 transition focus:bg-card focus:outline-none focus:ring-2 disabled:opacity-50 dark:bg-background/70 dark:text-foreground dark:focus:bg-card ${
               errors.password
                 ? "border-rose-300 focus:border-rose-500 focus:ring-rose-500/20 dark:border-rose-800"
-                : "border-zinc-200 focus:border-indigo-500 focus:ring-indigo-500/20 dark:border-zinc-800 dark:focus:border-indigo-500"
+                : "border-border focus:border-indigo-500 focus:ring-indigo-500/20 dark:border-border dark:focus:border-indigo-500"
             }`}
           />
           <LockKeyhole className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />

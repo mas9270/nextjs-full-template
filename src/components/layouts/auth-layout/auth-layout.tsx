@@ -1,6 +1,14 @@
-export default function AuthLayout(props: {
-  children: React.ReactNode;
-}) {
+import Header from "./header/header";
+import Footer from "./footer/footer";
+import Main from "./main/main";
+
+export default function AuthLayout(props: { children: React.ReactNode }) {
   const { children } = props;
-  return <div className="w-full h-full flex flex-col">{children}</div>;
+  return (
+    <div className="w-full flex-1 flex flex-col bg-background relative">
+      <Header />
+      <Main>{children}</Main>
+      <Footer />
+    </div>
+  );
 }
