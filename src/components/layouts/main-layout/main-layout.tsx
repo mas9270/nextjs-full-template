@@ -5,7 +5,7 @@ import Main from "./main/main";
 export default function MainLayout(props: { children: React.ReactNode }) {
   const { children } = props;
   return (
-    <div className="w-full flex-1 flex flex-col bg-background relative">
+    <div className="w-full flex-1 flex flex-col bg-background">
       <Header />
       <Main>{children}</Main>
       <Footer />

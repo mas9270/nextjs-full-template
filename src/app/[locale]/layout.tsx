@@ -57,7 +57,7 @@ export default async function RootLayout({
     <html {...dirProps} suppressHydrationWarning>
       <body
         className={clsx(
-          "h-dvh w-full transition-colors duration-200 flex justify-center",
+          "h-dvh w-full transition-colors duration-200 flex justify-center relative",
           iranYekan.variable,
         )}
       >
