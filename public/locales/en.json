@@ -1,5 +1,34 @@
 {
   "common": {
     "welcome": "Welcome"
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create an account",
+    "loginSubtitle": "Sign in to your account to continue",
+    "registerSubtitle": "Enter your details to get started",
+    "noAccount": "Don't have an account? ",
+    "hasAccount": "Already have an account? ",
+    "signUpAction": "Sign up",
+    "signInAction": "Sign in",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "John Doe",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "submitLogin": "Sign In",
+    "submittingLogin": "Signing in...",
+    "submitRegister": "Create Account",
+    "submittingRegister": "Creating account...",
+    "defaultLoginError": "An error occurred while signing in",
+    "defaultRegisterError": "An error occurred while signing up",
+    "errors": {
+      "nameMin": "Name must be at least 2 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "passwordMin": "Password must be at least 6 characters",
+      "confirmPasswordRequired": "Confirm password is required",
+      "passwordMismatch": "Passwords do not match"
+    }
   }
 }

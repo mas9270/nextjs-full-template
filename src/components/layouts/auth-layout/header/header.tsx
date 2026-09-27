@@ -1,3 +1,4 @@
+import LanguageToggle from "@/components/common/language-toggle";
 import ThemeToggle from "@/components/common/theme-toggle";
 
 export default function Header() {
@@ -5,6 +6,7 @@ export default function Header() {
     <header className="w-full p-2.5 flex items-center justify-between">
       <div className="flex gap-1.5">
         <ThemeToggle />
+        <LanguageToggle />
       </div>
       <div></div>
     </header>

@@ -1,5 +1,35 @@
 {
   "common": {
     "welcome": "خوش آمدید"
+  },
+
+  "auth": {
+    "loginTitle": "خوش آمدید",
+    "registerTitle": "ایجاد حساب کاربری",
+    "loginSubtitle": "برای ادامه وارد حساب خود شوید",
+    "registerSubtitle": "برای شروع، اطلاعات خود را وارد کنید",
+    "noAccount": "حساب کاربری ندارید؟ ",
+    "hasAccount": "قبلاً ثبت‌نام کرده‌اید؟ ",
+    "signUpAction": "ثبت‌نام کنید",
+    "signInAction": "وارد شوید",
+    "fullNameLabel": "نام و نام خانوادگی",
+    "fullNamePlaceholder": "علی علوی",
+    "emailLabel": "ایمیل",
+    "passwordLabel": "رمز عبور",
+    "confirmPasswordLabel": "تکرار رمز عبور",
+    "submitLogin": "ورود به حساب",
+    "submittingLogin": "در حال ورود...",
+    "submitRegister": "ایجاد حساب کاربری",
+    "submittingRegister": "در حال ثبت نام...",
+    "defaultLoginError": "خطایی در ورود به سیستم رخ داد",
+    "defaultRegisterError": "خطایی در ثبت‌نام رخ داد",
+    "errors": {
+      "nameMin": "نام باید حداقل ۲ کاراکتر باشد",
+      "emailRequired": "ایمیل الزامی است",
+      "emailInvalid": "ایمیل نامعتبر است",
+      "passwordMin": "رمز عبور حداقل ۶ کاراکتر است",
+      "confirmPasswordRequired": "تکرار رمز عبور الزامی است",
+      "passwordMismatch": "رمز عبور و تکرار آن یکسان نیستند"
+    }
   }
 }

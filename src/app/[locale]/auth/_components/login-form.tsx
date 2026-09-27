@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,30 +12,38 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  ArrowLeft,
+  ArrowRight,
   Loader2,
 } from "lucide-react";
 import { useRouter } from "@/navigation";
 import { http } from "@/lib/api-client";
 import { useAppStore } from "@/store/use-app-store";
 
-const login_schema = z.object({
-  email: z.string().min(1, "ایمیل الزامی است").email("ایمیل نامعتبر است"),
-  password: z.string().min(6, "رمز عبور حداقل ۶ کاراکتر است"),
-});
-
-type LoginFormData = z.infer<typeof login_schema>;
-
 interface LoginFormProps {
   onSuccess?: () => void;
 }
 
 export default function LoginForm({ onSuccess }: LoginFormProps) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const setUser = useAppStore((state) => state.setUser);
 
   const [show_password, set_show_password] = useState(false);
   const [server_error, set_server_error] = useState<string | null>(null);
+
+  const login_schema = useMemo(
+    () =>
+      z.object({
+        email: z
+          .string()
+          .min(1, t("errors.emailRequired"))
+          .email(t("errors.emailInvalid")),
+        password: z.string().min(6, t("errors.passwordMin")),
+      }),
+    [t],
+  );
+
+  type LoginFormData = z.infer<typeof login_schema>;
 
   const {
     register,
@@ -46,20 +55,18 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   });
 
   const on_submit = async (data: LoginFormData) => {
-    set_server_error(null);
-    try {
-      const res = await http.post<{ user: any }>("/auth/login", data);
-      setUser(res.data?.user);
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        router.push("/main");
-      }
-    } catch (err: any) {
-      set_server_error(
-        err.response?.data?.message || "خطایی در ورود به سیستم رخ داد"
-      );
-    }
+    // set_server_error(null);
+    // try {
+    //   const res = await http.post<{ user: any }>("/auth/login", data);
+    //   setUser(res.data?.user);
+    //   if (onSuccess) {
+    //     onSuccess();
+    //   } else {
+    //     router.push("/main");
+    //   }
+    // } catch (err: any) {
+    //   set_server_error(err.response?.data?.message || t("defaultLoginError"));
+    // }
   };
 
   return (
@@ -80,7 +87,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          ایمیل
+          {t("emailLabel")}
         </label>
         <div className="relative">
           <input
@@ -104,7 +111,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          رمز عبور
+          {t("passwordLabel")}
         </label>
         <div className="relative">
           <input
@@ -146,12 +153,12 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         {isSubmitting ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>در حال ورود...</span>
+            <span>{t("submittingLogin")}</span>
           </>
         ) : (
           <>
-            <span>ورود به حساب</span>
-            <ArrowLeft className="h-4 w-4" />
+            <span>{t("submitLogin")}</span>
+            <ArrowRight className="h-4 w-4 rtl:rotate-180" />
           </>
         )}
       </button>

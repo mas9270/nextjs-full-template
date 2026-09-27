@@ -1,5 +1,6 @@
 "use client";
 
+// import { useNotify } from "@/hooks/use-notify";
 import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -7,7 +8,9 @@ import { useTheme } from "next-themes";
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
+  // const { notify } = useNotify();
   const toggleTheme = () => {
+    // notify("wdawaw", "success");
     setTheme(isDark ? "light" : "dark");
   };
 

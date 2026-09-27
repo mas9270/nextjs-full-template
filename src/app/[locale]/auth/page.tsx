@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import LoginForm from "./_components/login-form";
 import RegisterForm from "./_components/register-form";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
+  const t = useTranslations("auth");
 
   return (
     <div className="relative flex flex-1 min-h-0 min-w-0 w-full items-center justify-center overflow-hidden bg-background p-4 text-foreground transition-colors duration-200">
@@ -30,12 +32,10 @@ export default function AuthPage() {
       >
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            {mode === "login" ? "خوش آمدید" : "ایجاد حساب کاربری"}
+            {mode === "login" ? t("loginTitle") : t("registerTitle")}
           </h1>
           <p className="mt-2 text-sm text-foreground/60">
-            {mode === "login"
-              ? "برای ادامه وارد حساب خود شوید"
-              : "برای شروع، اطلاعات خود را وارد کنید"}
+            {mode === "login" ? t("loginSubtitle") : t("registerSubtitle")}
           </p>
         </div>
 
@@ -53,14 +53,12 @@ export default function AuthPage() {
 
         <div className="mt-8 text-center text-sm">
           <p className="text-foreground/65">
-            {mode === "login"
-              ? "حساب کاربری ندارید؟ "
-              : "قبلاً ثبت‌نام کرده‌اید؟ "}
+            {mode === "login" ? t("noAccount") : t("hasAccount")}
             <button
               onClick={() => setMode(mode === "login" ? "register" : "login")}
               className="font-bold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400"
             >
-              {mode === "login" ? "ثبت‌نام کنید" : "وارد شوید"}
+              {mode === "login" ? t("signUpAction") : t("signInAction")}
             </button>
           </p>
         </div>

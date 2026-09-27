@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,38 +13,48 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  ArrowLeft,
+  ArrowRight,
   Loader2,
 } from "lucide-react";
 import { useRouter } from "@/navigation";
 import { http } from "@/lib/api-client";
 import { useAppStore } from "@/store/use-app-store";
 
-const register_schema = z
-  .object({
-    name: z.string().min(2, "نام باید حداقل ۲ کاراکتر باشد"),
-    email: z.string().min(1, "ایمیل الزامی است").email("ایمیل نامعتبر است"),
-    password: z.string().min(6, "رمز عبور حداقل ۶ کاراکتر است"),
-    confirm_password: z.string().min(1, "تکرار رمز عبور الزامی است"),
-  })
-  .refine((data) => data.password === data.confirm_password, {
-    message: "رمز عبور و تکرار آن یکسان نیستند",
-    path: ["confirm_password"],
-  });
-
-type RegisterFormData = z.infer<typeof register_schema>;
-
 interface RegisterFormProps {
   onSuccess?: () => void;
 }
 
 export default function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const setUser = useAppStore((state) => state.setUser);
 
   const [show_password, set_show_password] = useState(false);
   const [show_confirm_password, set_show_confirm_password] = useState(false);
   const [server_error, set_server_error] = useState<string | null>(null);
+
+  const register_schema = useMemo(
+    () =>
+      z
+        .object({
+          name: z.string().min(2, t("errors.nameMin")),
+          email: z
+            .string()
+            .min(1, t("errors.emailRequired"))
+            .email(t("errors.emailInvalid")),
+          password: z.string().min(6, t("errors.passwordMin")),
+          confirm_password: z
+            .string()
+            .min(1, t("errors.confirmPasswordRequired")),
+        })
+        .refine((data) => data.password === data.confirm_password, {
+          message: t("errors.passwordMismatch"),
+          path: ["confirm_password"],
+        }),
+    [t],
+  );
+
+  type RegisterFormData = z.infer<typeof register_schema>;
 
   const {
     register,
@@ -55,24 +66,24 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   });
 
   const on_submit = async (data: RegisterFormData) => {
-    set_server_error(null);
-    try {
-      const res = await http.post<{ user: any }>("/auth/register", {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      });
-      setUser(res.data?.user);
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        router.push("/main");
-      }
-    } catch (err: any) {
-      set_server_error(
-        err.response?.data?.message || "خطایی در ثبت‌نام رخ داد",
-      );
-    }
+    // set_server_error(null);
+    // try {
+    //   const res = await http.post<{ user: any }>("/auth/register", {
+    //     name: data.name,
+    //     email: data.email,
+    //     password: data.password,
+    //   });
+    //   setUser(res.data?.user);
+    //   if (onSuccess) {
+    //     onSuccess();
+    //   } else {
+    //     router.push("/main");
+    //   }
+    // } catch (err: any) {
+    //   set_server_error(
+    //     err.response?.data?.message || t("defaultRegisterError"),
+    //   );
+    // }
   };
 
   return (
@@ -93,13 +104,13 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          نام و نام خانوادگی
+          {t("fullNameLabel")}
         </label>
         <div className="relative">
           <input
             {...register("name")}
             type="text"
-            placeholder="علی علوی"
+            placeholder={t("fullNamePlaceholder")}
             disabled={isSubmitting}
             className={`h-11 w-full rounded-xl border bg-background/70 pl-3 pr-10 text-sm text-foreground placeholder:text-zinc-400 transition focus:bg-card focus:outline-none focus:ring-2 disabled:opacity-50 dark:bg-background/70 dark:text-foreground dark:focus:bg-card ${
               errors.name
@@ -116,7 +127,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          ایمیل
+          {t("emailLabel")}
         </label>
         <div className="relative">
           <input
@@ -140,7 +151,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          رمز عبور
+          {t("passwordLabel")}
         </label>
         <div className="relative">
           <input
@@ -176,7 +187,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-          تکرار رمز عبور
+          {t("confirmPasswordLabel")}
         </label>
         <div className="relative">
           <input
@@ -220,12 +231,12 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
         {isSubmitting ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>در حال ثبت نام...</span>
+            <span>{t("submittingRegister")}</span>
           </>
         ) : (
           <>
-            <span>ایجاد حساب کاربری</span>
-            <ArrowLeft className="h-4 w-4" />
+            <span>{t("submitRegister")}</span>
+            <ArrowRight className="h-4 w-4 rtl:rotate-180" />
           </>
         )}
       </button>
