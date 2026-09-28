@@ -1,69 +1,75 @@
-"use client";
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { http } from "@/lib/api-client";
-import { useAppStore } from "@/store/use-app-store";
+import { useAppStore, User, UserRole } from "@/store/use-app-store";
+import apiClient from "@/lib/api-client";
+import { useRouter } from "@/navigation";
 import { useEffect } from "react";
-import { useRouter } from "@/navigation"; // استفاده از navigation خودِ پروژه
 
-export function useAuth() {
+interface RawProfileResponse {
+  _id?: string;
+  id?: string;
+  name: string;
+  email?: string;
+  role: UserRole;
+}
+
+export const useAuth = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
-  const router = useRouter(); // جایگزین window.location
-  const { user, setUser, logout: clearStoreUser } = useAppStore();
+  const { user, setUser, logout: clearLocalUser } = useAppStore();
 
-  const {
-    data: profileData,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
+  const profileQuery = useQuery({
     queryKey: ["auth-profile"],
     queryFn: async () => {
-      const res = await http.get<any>("/auth/profile");
+      const res = await apiClient.get<RawProfileResponse>("/auth/profile");
       return res.data;
     },
+    staleTime: 1000 * 60 * 5,
     retry: false,
-    staleTime: 1000 * 60 * 5, // ۵ دقیقه کش
   });
 
-  // سینک کردن داده‌های کوئری با Zustand
   useEffect(() => {
-    if (profileData) {
-      setUser(profileData);
-    } else if (isError) {
-      clearStoreUser();
+    if (profileQuery.data) {
+      const raw = profileQuery.data;
+      const normalizedUser: User = {
+        id: raw.id || raw._id || "",
+        name: raw.name,
+        email: raw.email,
+        role: raw.role,
+      };
+      setUser(normalizedUser);
+    } else if (profileQuery.isError) {
+      clearLocalUser();
     }
-  }, [profileData, isError, setUser, clearStoreUser]);
+  }, [profileQuery.data, profileQuery.isError, setUser, clearLocalUser]);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await http.post("/auth/logout");
+      await apiClient.post("/auth/logout");
     },
-    onSuccess: () => {
-      clearStoreUser();
-      queryClient.setQueryData(["auth-profile"], null);
-      // ریدایرکت ایمن به لندینگ اصلی
-      router.push("/main"); 
-      router.refresh(); // اجبار به رفرش روت‌ها برای پاکسازی کش سرور
+    onSettled: () => {
+      clearLocalUser();
+      queryClient.removeQueries({ queryKey: ["auth-profile"] });
+      router.push("/auth");
     },
   });
 
-  // استفاده از Optional Chaining ایمن برای نقش‌ها
-  const hasRole = (roles: string | string[]) => {
-    if (!user?.role) return false;
-    const targetRoles = Array.isArray(roles) ? roles : [roles];
-    return targetRoles.includes(user.role);
+  const hasRole = (roles: UserRole | UserRole[]) => {
+    if (!user) return false;
+    if (Array.isArray(roles)) {
+      return roles.includes(user.role);
+    }
+    return user.role === roles;
   };
 
   return {
     user,
-    isLoading,
     isAuthenticated: !!user,
+    isLoading: profileQuery.isLoading,
     isAdmin: user?.role === "admin",
     isCustomer: user?.role === "customer",
     hasRole,
-    refetchProfile: refetch,
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,
+    refetchProfile: profileQuery.refetch,
   };
-}
+};

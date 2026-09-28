@@ -1,5 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosProgressEvent } from 'axios';
-import { ApiResponse } from '@/types/api';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosProgressEvent,
+  AxiosError,
+} from "axios";
+import { ApiResponse } from "@/types/api";
+import { useAppStore } from "@/store/use-app-store";
 
 export interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
   onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
@@ -7,29 +14,34 @@ export interface ExtendedAxiosRequestConfig extends AxiosRequestConfig {
 }
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
-  timeout: 15000,
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
+  // timeout: 15000,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => response,
-  (error) => {
-    if (error.response) {
-      if (error.response.status === 401 && typeof window !== 'undefined') {
-        window.location.href = '/login';
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        // ۱. پاکسازی نشست کاربر از استور کلاینت
+        useAppStore.getState().logout();
+
+        // ۲. هدایت کاربر با در نظر گرفتن زبان جاری به صفحه ورود
+        const currentPath = window.location.pathname;
+        const localeMatch = currentPath.match(/^\/(fa|en)(\/|$)/);
+        const currentLocale = localeMatch ? localeMatch[1] : "fa";
+
+        if (!currentPath.includes("/auth")) {
+          window.location.href = `/${currentLocale}/auth?callbackUrl=${encodeURIComponent(currentPath)}`;
+        }
       }
-      return Promise.reject(error.response.data);
     }
-    return Promise.reject({
-      success: false,
-      data: null,
-      message: error.message || 'Network Error',
-    } satisfies ApiResponse<null>);
-  }
+    return Promise.reject(error.response?.data || error);
+  },
 );
 
 export const http = {

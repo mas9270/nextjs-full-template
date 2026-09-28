@@ -2,7 +2,6 @@
   "common": {
     "welcome": "خوش آمدید"
   },
-
   "auth": {
     "loginTitle": "خوش آمدید",
     "registerTitle": "ایجاد حساب کاربری",
@@ -15,8 +14,11 @@
     "fullNameLabel": "نام و نام خانوادگی",
     "fullNamePlaceholder": "علی علوی",
     "emailLabel": "ایمیل",
+    "emailPlaceholder": "name@example.com",
     "passwordLabel": "رمز عبور",
+    "passwordPlaceholder": "••••••••",
     "confirmPasswordLabel": "تکرار رمز عبور",
+    "rememberMe": "مرا به خاطر بسپار",
     "submitLogin": "ورود به حساب",
     "submittingLogin": "در حال ورود...",
     "submitRegister": "ایجاد حساب کاربری",
